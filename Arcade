@@ -1,0 +1,100 @@
+/**
+ * 
+ */
+package arcade.menu;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+
+/**
+ * @author jesus
+ *
+ */
+public class Arcade {
+
+	private static String name=null;
+	private static String dir = "C:\\Users\\jesus\\Desktop\\ws-Jesus\\Arcade\\data\\scoreList";
+	private static ArrayList<String> lw = new ArrayList<String>();
+	private static Players players=new Players();
+	private static Boolean exit = Boolean.FALSE;
+	private static String quest=null;
+	
+	private static BufferedWriter out;
+	/**
+	 * @param args
+	 * @throws IOException 
+	 */
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		
+		try {
+			out=Files.newBufferedWriter(Paths.get(dir), StandardOpenOption.APPEND);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		do {
+			System.out.print("WELCOME TO THE VIRTUAL ARCADE, PLEASE INTRODUCE YOUR NAME: ");
+			BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+			name = in.readLine().toUpperCase();
+			playerParser(name);
+			System.out.println(players);
+			
+			System.out.print("RESTART MAIN? Y/N: ");
+			quest = in.readLine().toUpperCase();
+			
+			switch (quest) {
+			case "N":
+				exit = Boolean.TRUE;
+				break;
+				//ILLO PREGUNTA TU CASO EN ESPECIFICO EN STACKOVERFLOW PORQUE NO HAY MANERA
+			default:
+				break;
+			}
+		} while (!exit);
+		out.close();
+	}
+	
+	private static void playerParser(String playerName) throws IOException {
+		
+		Player p = new Player(playerName);
+		players.addPlayer(p);
+		
+		lw.clear();
+		for(int i = 0; i< players.getPlayers().size(); i++) {
+			lw.add(i, players.getPlayers().get(i).toString());
+		}
+		clearTheFile();
+		for(String playerString:lw) {
+			out.write(playerString);
+			out.newLine();
+		}
+		
+		/*
+		try {
+			Files.write(Paths.get(dir), lw, StandardOpenOption.APPEND);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("FILE WRITTING ERROR");
+			e.printStackTrace();
+		}
+		*/
+	}
+	private static void clearTheFile() throws IOException {
+        FileWriter fwOb = new FileWriter(Paths.get(dir).toFile().getName(), false); 
+        PrintWriter pwOb = new PrintWriter(fwOb, false);
+        pwOb.flush();
+        pwOb.close();
+        fwOb.close();
+    }
+	
+
+}
